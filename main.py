@@ -73,7 +73,7 @@ for day in range(day_cnt):
         if day > lib.activeDay:
             scores += lib.score()
 
-with open('output/a_example.txt', 'w') as f_out:
+with open(input_file.replace('input', 'output'), 'w') as f_out:
     active_libs = [lib for lib in active_libs if lib.activeDay < day_cnt]
     f_out.writelines([str(len(active_libs)) + '\n'])
     for lib in active_libs:
