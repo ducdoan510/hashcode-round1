@@ -24,4 +24,4 @@ for _ in range(library_cnt):
     library_book_count, library_signup_time, library_scanned_per_day = [*map(int, lines[lines_idx].split())]
     library_books = [*map(int, lines[lines_idx + 1].split())]
     libraries.append(Library(library_books, library_signup_time, library_scanned_per_day))
-
+    lines_idx += 2
