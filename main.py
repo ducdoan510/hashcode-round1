@@ -1,4 +1,5 @@
 # input
+import sys
 
 class Library(object):
     def __init__(self, id, books, signup_time, books_scanned_per_day):
@@ -28,7 +29,8 @@ class Library(object):
         
 
 
-input_file = 'input/a_example.txt'
+input_file = sys.argv[1]
+output_file = sys.argv[2]
 
 with open(input_file, 'r') as f:
     lines = []
@@ -73,8 +75,8 @@ for day in range(day_cnt):
         if day > lib.activeDay:
             scores += lib.score()
 
-with open('output/a_example.txt', 'w') as f_out:
-    active_libs = [lib for lib in active_libs if lib.activeDay < day_cnt]
+with open(output_file, 'w') as f_out:
+    active_libs = [lib for lib in active_libs if lib.activeDay < day_cnt and lib.scanned_books]
     f_out.writelines([str(len(active_libs)) + '\n'])
     for lib in active_libs:
         lib_result = "{} {}\n".format(lib.id, len(lib.scanned_books))
