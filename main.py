@@ -1,14 +1,16 @@
 # input
 
 class Library(object):
-    def __init__(self, books, signup_time, books_scanned_per_day):
+    def __init__(self, id, books, signup_time, books_scanned_per_day):
+        self.id = id
         self.books = books
         self.activeDay = -1
         self.signup_time = signup_time
         self.books_scanned_per_day = books_scanned_per_day
+        self.scanned_books = []
 
     def getNextBooks(self):
-        cur_book_scores = [(book_scores[i], i) for i in self.books]
+        cur_book_scores = [(book_scores[i], i) for i in [book_id for book_id in self.books if book_scores[book_id] > 0]]
         cur_book_scores = sorted(cur_book_scores, reverse=True) # [(book_score, index)]
         return cur_book_scores
     
@@ -18,6 +20,7 @@ class Library(object):
     
     def score(self):
         nextBooks = self.getNextBooks()
+        self.scanned_books.extend([item[1] for item in nextBooks])
         s = sum([item[0] for item in nextBooks])
         for _, book_idx in nextBooks:
             book_scores[book_idx] = 0
@@ -37,10 +40,10 @@ book_scores = [*map(int, lines[1].split())]
 libraries = []
 
 lines_idx = 2
-for _ in range(library_cnt):
+for idx in range(library_cnt):
     library_book_count, library_signup_time, library_scanned_per_day = [*map(int, lines[lines_idx].split())]
     library_books = [*map(int, lines[lines_idx + 1].split())]
-    libraries.append(Library(library_books, library_signup_time, library_scanned_per_day))
+    libraries.append(Library(idx, library_books, library_signup_time, library_scanned_per_day))
     lines_idx += 2
 
 
@@ -70,5 +73,11 @@ for day in range(day_cnt):
         if day > lib.activeDay:
             scores += lib.score()
 
-print(scores)
+with open('output/a_example.txt', 'w') as f_out:
+    active_libs = [lib for lib in active_libs if lib.activeDay < day_cnt]
+    f_out.writelines([str(len(active_libs)) + '\n'])
+    for lib in active_libs:
+        lib_result = "{} {}\n".format(lib.id, len(lib.scanned_books))
+        f_out.writelines([lib_result])
+        f_out.writelines([' '.join(map(str, lib.scanned_books)) + '\n'])
 
