@@ -44,24 +44,28 @@ for _ in range(library_cnt):
     lines_idx += 2
 
 
-def findNextLibrary(curr_date):
-    selected_lib = libraries.pop(0)
-    selected_lib.activeDay = curr_date + selected_lib.signup_time
-    active_libs.append(selected_lib)
-
-
-def udpateLibraries():
-    libraries.sort(key=lambda lib: lib.value())
-
-
 scores = 0
 active_libs = []
 nextSignupDay = 0
 
+
+def findNextLibrary(curr_date):
+    if libraries:
+        selected_lib = libraries.pop(0)
+        selected_lib.activeDay = curr_date + selected_lib.signup_time
+        active_libs.append(selected_lib)
+        return selected_lib.activeDay
+    return -1
+
+
+def udpateLibraries():
+    libraries.sort(key=lambda lib: lib.value(), reverse=True)
+
+
 for day in range(day_cnt):
     udpateLibraries()
     if day == nextSignupDay:
-        findNextLibrary(day)
+        nextSignupDay = findNextLibrary(day)
     for lib in active_libs:
         if day > lib.activeDay:
             scores += lib.score()
